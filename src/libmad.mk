@@ -16,11 +16,12 @@ define $(PKG)_UPDATE
     head -1
 endef
 
+# https://sourceforge.net/p/msys2/mailman/message/34542604/
 define $(PKG)_BUILD
     $(SED) -i '/-fforce-mem/d' '$(SOURCE_DIR)'/configure.ac
     # configure script is ancient so regenerate
     touch '$(SOURCE_DIR)'/{NEWS,AUTHORS,ChangeLog}
-    cd '$(SOURCE_DIR)' && autoreconf -fi
+    cd '$(SOURCE_DIR)' && WANT_AUTOMAKE=latest autoreconf -fi
     cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' \
         $(MXE_CONFIGURE_OPTS)
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' LDFLAGS='-no-undefined'

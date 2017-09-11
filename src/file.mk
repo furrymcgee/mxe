@@ -29,7 +29,7 @@ define $(PKG)_BUILD
     cp -Rp '$(1)' '$(1).native'
     cd '$(1).native' && ./configure \
         --disable-shared
-    $(MAKE) -C '$(1).native/src' -j '$(JOBS)' file
+    $(MAKE) -C '$(1).native/src' -j '$(JOBS)' all file
 
     cd '$(1)' && ./configure \
         $(MXE_CONFIGURE_OPTS) \

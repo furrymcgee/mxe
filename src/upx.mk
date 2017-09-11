@@ -37,21 +37,3 @@ define $(PKG)_BUILD
     cp '$(1)/src/upx.exe' '$(PREFIX)/$(TARGET)/bin/'
 endef
 
-define $(PKG)_BUILD_$(BUILD)
-    $(call PREPARE_PKG_SOURCE,ucl,$(1))
-    mkdir '$(1)/lzma'
-    $(call PREPARE_PKG_SOURCE,lzma,$(1)/lzma)
-
-    UPX_UCLDIR='$(1)/$(ucl_SUBDIR)' \
-    UPX_LZMADIR='$(1)/lzma' \
-    UPX_LZMA_VERSION=0x$(subst .,,$(lzma_VERSION)) \
-    $(MAKE) -C '$(1)' -j '$(JOBS)' all \
-        CXX='$(BUILD_CXX)' \
-        CC='$(BUILD_CC)' \
-        PKG_CONFIG='$(PREFIX)/$(BUILD)/bin/pkgconf' \
-        LIBS='-L$(PREFIX)/$(BUILD)/lib -lucl -lz' \
-        CXXFLAGS=-DUCL_NO_ASM \
-        CXXFLAGS_WERROR= \
-        exeext=
-    cp '$(1)/src/upx' '$(PREFIX)/$(BUILD)/bin/'
-endef

@@ -17,7 +17,9 @@ define $(PKG)_BUILD
     cd '$(SOURCE_DIR)' && mv '$(googletest_SUBDIR)' gmock/gtest
     cd '$(SOURCE_DIR)' && ./autogen.sh
 
+    # https://github.com/google/protobuf/issues/3165
     cd '$(BUILD_DIR)' && '$(SOURCE_DIR)'/configure \
+        CXXFLAGS=-std=gnu++11 \
         $(MXE_CONFIGURE_OPTS) \
         $(if $(BUILD_CROSS), \
             --with-zlib \
