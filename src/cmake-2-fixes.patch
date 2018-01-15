@@ -1,0 +1,12 @@
+--- cmake-3.8.2/Source/cmGlobalGenerator.cxx
++++ cmake-3.8.2/Source/cmGlobalGenerator.cxx
+@@ -661,7 +661,8 @@
+     compilerEnv += lang;
+     compilerEnv += "_COMPILER_ENV_VAR";
+     std::ostringstream noCompiler;
+-    const char* compilerFile = mf->GetDefinition(compilerName);
++    std::string compilerProgram (cmSystemTools::FindProgram(mf->GetDefinition(compilerName)));
++    const char* compilerFile = compilerProgram.c_str();
+     if (!compilerFile || !*compilerFile ||
+         cmSystemTools::IsNOTFOUND(compilerFile)) {
+       /* clang-format off */
