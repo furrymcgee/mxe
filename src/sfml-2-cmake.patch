@@ -1,0 +1,155 @@
+--- SFML-2.4.2/CMakeLists.txt
++++ SFML-2.4.2/CMakeLists.txt
+@@ -202,12 +202,12 @@
+     set(XCODE_TEMPLATES_ARCH "\$(NATIVE_ARCH_ACTUAL)")
+ endif()
+ 
+-if(SFML_OS_LINUX OR SFML_OS_FREEBSD)
++if(SFML_OS_LINUX OR SFML_OS_FREEBSD OR SFML_INSTALL_PKGCONFIG_FILES)
+     set(PKGCONFIG_DIR lib${LIB_SUFFIX}/pkgconfig)
+     if(SFML_OS_FREEBSD)
+         set(PKGCONFIG_DIR libdata/pkgconfig)
+     endif()
+-    if(BUILD_SHARED_LIBS)
++    if(SFML_INSTALL_PKGCONFIG_FILES)
+         sfml_set_option(SFML_INSTALL_PKGCONFIG_FILES FALSE BOOL "TRUE to automatically install pkg-config files so other projects can find SFML")
+         if(SFML_INSTALL_PKGCONFIG_FILES)
+             foreach(sfml_module IN ITEMS all system window graphics audio network)
+@@ -302,94 +302,3 @@
+     install(FILES cmake/Modules/FindSFML.cmake DESTINATION ${INSTALL_MISC_DIR}/cmake/Modules)
+ endif()
+ 
+-# install 3rd-party libraries and tools
+-if(SFML_OS_WINDOWS)
+-
+-    # install the binaries of SFML dependencies
+-    if(ARCH_32BITS)
+-        install(DIRECTORY extlibs/bin/x86/ DESTINATION bin)
+-        if(SFML_COMPILER_MSVC AND SFML_MSVC_VERSION LESS 14)
+-            install(DIRECTORY extlibs/libs-msvc/x86/ DESTINATION lib)
+-        elseif(SFML_COMPILER_MSVC)
+-            install(DIRECTORY extlibs/libs-msvc-universal/x86/ DESTINATION lib)
+-        else()
+-            install(DIRECTORY extlibs/libs-mingw/x86/ DESTINATION lib)
+-        endif()
+-    elseif(ARCH_64BITS)
+-        install(DIRECTORY extlibs/bin/x64/ DESTINATION bin)
+-        if(SFML_COMPILER_MSVC AND SFML_MSVC_VERSION LESS 14)
+-            install(DIRECTORY extlibs/libs-msvc/x64/ DESTINATION lib)
+-        elseif(SFML_COMPILER_MSVC)
+-            install(DIRECTORY extlibs/libs-msvc-universal/x64/ DESTINATION lib)
+-        else()
+-            install(DIRECTORY extlibs/libs-mingw/x64/ DESTINATION lib)
+-        endif()
+-    endif()
+-
+-elseif(SFML_OS_MACOSX)
+-
+-    # install extlibs dependencies only when used
+-    if("${FLAC_LIBRARY}" STREQUAL "${SFML_SOURCE_DIR}/extlibs/libs-osx/Frameworks/FLAC.framework")
+-        install(DIRECTORY extlibs/libs-osx/Frameworks/FLAC.framework DESTINATION ${CMAKE_INSTALL_FRAMEWORK_PREFIX})
+-    endif()
+-
+-    if("${FREETYPE_LIBRARY}" STREQUAL "${SFML_SOURCE_DIR}/extlibs/libs-osx/Frameworks/freetype.framework")
+-        install(DIRECTORY extlibs/libs-osx/Frameworks/freetype.framework DESTINATION ${CMAKE_INSTALL_FRAMEWORK_PREFIX})
+-    endif()
+-
+-    if("${OGG_LIBRARY}" STREQUAL "${SFML_SOURCE_DIR}/extlibs/libs-osx/Frameworks/ogg.framework")
+-        install(DIRECTORY extlibs/libs-osx/Frameworks/ogg.framework DESTINATION ${CMAKE_INSTALL_FRAMEWORK_PREFIX})
+-    endif()
+-
+-    if("${VORBIS_LIBRARY}" STREQUAL "${SFML_SOURCE_DIR}/extlibs/libs-osx/Frameworks/vorbis.framework")
+-        install(DIRECTORY extlibs/libs-osx/Frameworks/vorbis.framework DESTINATION ${CMAKE_INSTALL_FRAMEWORK_PREFIX})
+-    endif()
+-
+-    if("${VORBISENC_LIBRARY}" STREQUAL "${SFML_SOURCE_DIR}/extlibs/libs-osx/Frameworks/vorbisenc.framework")
+-        install(DIRECTORY extlibs/libs-osx/Frameworks/vorbisenc.framework DESTINATION ${CMAKE_INSTALL_FRAMEWORK_PREFIX})
+-    endif()
+-
+-    if("${VORBISFILE_LIBRARY}" STREQUAL "${SFML_SOURCE_DIR}/extlibs/libs-osx/Frameworks/vorbisfile.framework")
+-        install(DIRECTORY extlibs/libs-osx/Frameworks/vorbisfile.framework DESTINATION ${CMAKE_INSTALL_FRAMEWORK_PREFIX})
+-    endif()
+-
+-    if("${OPENAL_LIBRARY}" STREQUAL "${SFML_SOURCE_DIR}/extlibs/libs-osx/Frameworks/OpenAL.framework")
+-        install(DIRECTORY "${OPENAL_LIBRARY}" DESTINATION ${CMAKE_INSTALL_FRAMEWORK_PREFIX})
+-    endif()
+-
+-    # install the Xcode templates if requested
+-    if(SFML_INSTALL_XCODE_TEMPLATES)
+-        # configure the templates plist files
+-        foreach(TEMPLATE "SFML Compiler" "SFML App")
+-            configure_file(
+-                        "tools/xcode/templates/SFML/${TEMPLATE}.xctemplate/TemplateInfo.plist.in"
+-                        "${CMAKE_CURRENT_BINARY_DIR}/tools/xcode/templates/SFML/${TEMPLATE}.xctemplate/TemplateInfo.plist"
+-                        @ONLY)
+-        endforeach()
+-        install(DIRECTORY "tools/xcode/templates/SFML" "${CMAKE_CURRENT_BINARY_DIR}/tools/xcode/templates/SFML"
+-                DESTINATION /Library/Developer/Xcode/Templates
+-                PATTERN "*.in" EXCLUDE
+-                PATTERN ".DS_Store" EXCLUDE)
+-    endif()
+-
+-elseif(SFML_OS_IOS)
+-
+-    # fix CMake install rules broken for iOS (see http://public.kitware.com/Bug/view.php?id=12506)
+-    if(SFML_OS_IOS)
+-        install(DIRECTORY "${CMAKE_BINARY_DIR}/lib/\$ENV{CONFIGURATION}/" DESTINATION lib${LIB_SUFFIX})
+-    endif()
+-
+-    # since the iOS libraries are built as static, we must install the SFML dependencies
+-    # too so that the end user can easily link them to its final application
+-    install(FILES extlibs/libs-ios/libfreetype.a extlibs/libs-ios/libjpeg.a DESTINATION lib)
+-
+-elseif(SFML_OS_ANDROID)
+-
+-    # install extlibs
+-    install(DIRECTORY extlibs/libs-android/${ANDROID_ABI} DESTINATION extlibs/lib)
+-    install(FILES extlibs/Android.mk DESTINATION extlibs)
+-
+-    # install Android.mk so the NDK knows how to set up SFML
+-    install(FILES src/SFML/Android.mk DESTINATION .)
+-
+-endif()
+--- SFML-2.4.2/cmake/Macros.cmake
++++ SFML-2.4.2/cmake/Macros.cmake
+@@ -34,10 +34,6 @@
+             set_target_properties(${target} PROPERTIES IMPORT_SUFFIX ".a")
+         endif()
+     else()
+-        set_target_properties(${target} PROPERTIES DEBUG_POSTFIX -s-d)
+-        set_target_properties(${target} PROPERTIES RELEASE_POSTFIX -s)
+-        set_target_properties(${target} PROPERTIES MINSIZEREL_POSTFIX -s)
+-        set_target_properties(${target} PROPERTIES RELWITHDEBINFO_POSTFIX -s)
+     endif()
+ 
+     # set the version and soversion of the target (for compatible systems -- mostly Linuxes)
+--- SFML-2.4.2/tools/pkg-config/sfml-all.pc.in
++++ SFML-2.4.2/tools/pkg-config/sfml-all.pc.in
+@@ -7,4 +7,5 @@
+ Description: The Simple and Fast Multimedia Library, all modules.
+ URL: http://www.sfml-dev.org
+ Version: @VERSION_MAJOR@.@VERSION_MINOR@.@VERSION_PATCH@
++Cflags: -DSFML_STATIC
+ Requires: sfml-system, sfml-window, sfml-graphics, sfml-audio, sfml-network
+--- SFML-2.4.2/tools/pkg-config/sfml-audio.pc.in
++++ SFML-2.4.2/tools/pkg-config/sfml-audio.pc.in
+@@ -7,6 +7,8 @@
+ Description: The Simple and Fast Multimedia Library, audio module.
+ URL: http://www.sfml-dev.org
+ Version: @VERSION_MAJOR@.@VERSION_MINOR@.@VERSION_PATCH@
++Cflags: -DSFML_STATIC
+ Requires: sfml-system
++Requires.private: openal, sndfile, vorbisenc, vorbisfile
+ Libs: -L${libdir} -lsfml-audio
+ Cflags: -I${includedir}
+--- SFML-2.4.2/tools/pkg-config/sfml-graphics.pc.in
++++ SFML-2.4.2/tools/pkg-config/sfml-graphics.pc.in
+@@ -7,6 +7,8 @@
+ Description: The Simple and Fast Multimedia Library, graphics module.
+ URL: http://www.sfml-dev.org
+ Version: @VERSION_MAJOR@.@VERSION_MINOR@.@VERSION_PATCH@
++Cflags: -DSFML_STATIC
+ Requires: sfml-window
++Requires.private: freetype2, glew, jpeg
+ Libs: -L${libdir} -lsfml-graphics
+ Cflags: -I${includedir}
