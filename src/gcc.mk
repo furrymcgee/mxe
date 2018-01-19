@@ -12,6 +12,7 @@ $(PKG)_URL      := https://ftp.gnu.org/gnu/gcc/gcc-$($(PKG)_VERSION)/$($(PKG)_FI
 $(PKG)_URL_2    := https://www.mirrorservice.org/sites/sourceware.org/pub/gcc/releases/gcc-$($(PKG)_VERSION)/$($(PKG)_FILE)
 $(PKG)_DEPS     := binutils mingw-w64 $(addprefix $(BUILD)~,gmp isl mpc mpfr)
 
+$(PKG)_DEPS_$(BUILD) :=
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://ftp.gnu.org/gnu/gcc/?C=M;O=D' | \
     grep -v 'gcc-6\|gcc-7' | \
@@ -58,7 +59,9 @@ define $(PKG)_BUILD_mingw-w64
     $(call PREPARE_PKG_SOURCE,mingw-w64,$(BUILD_DIR))
     mkdir '$(BUILD_DIR).headers'
     cd '$(BUILD_DIR).headers' && '$(BUILD_DIR)/$(mingw-w64_SUBDIR)/mingw-w64-headers/configure' \
+        --build='$(BUILD)' \
         --host='$(TARGET)' \
+        --target='$(TARGET)' \
         --prefix='$(PREFIX)/$(TARGET)' \
         --enable-sdk=all \
         --enable-idl \

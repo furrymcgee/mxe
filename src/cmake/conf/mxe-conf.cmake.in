@@ -49,6 +49,10 @@ set(CMAKE_INSTALL_PREFIX @PREFIX@/@TARGET@ CACHE PATH "Installation Prefix")
 # For custom mxe FindPackage scripts
 set(CMAKE_MODULE_PATH "@PREFIX@/share/cmake/modules" ${CMAKE_MODULE_PATH})
 
+# Launch rules
+set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE $ENV{MXE_COMPILE})
+set_property(GLOBAL PROPERTY RULE_LAUNCH_CUSTOM $ENV{MXE_CUSTOM})
+set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK $ENV{MXE_LINK})
 
 ## Programs
 set(CMAKE_C_COMPILER @PREFIX@/bin/@TARGET@-gcc)

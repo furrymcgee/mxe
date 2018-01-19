@@ -78,24 +78,6 @@ repeat = $(subst x,$(1),$(subst $(space),,$(call int_encode,$(2))))
 
 PLUGIN_HEADER = $(info $(shell printf '%-$(PRINTF_COL_1_WIDTH)s %s\n' [plugin] $(dir $(lastword $(MAKEFILE_LIST)))))
 
-MXE_DISABLE_DOC_OPTS = \
-    ac_cv_prog_HAVE_DOXYGEN="false" \
-    --enable-doc=no \
-    --enable-gtk-doc=no \
-    --enable-gtk-doc-html=no \
-    --enable-gtk-doc-pdf=no \
-    --{docdir,infodir,mandir,with-html-dir}='$(BUILD_DIR).sink' \
-    --disable-doxygen
-
-MXE_CONFIGURE_OPTS = \
-    --host='$(TARGET)' \
-    --build='$(BUILD)' \
-    --prefix='$(PREFIX)/$(TARGET)' \
-    $(if $(BUILD_STATIC), \
-        --enable-static --disable-shared , \
-        --disable-static --enable-shared ) \
-    $(MXE_DISABLE_DOC_OPTS)
-
 # GCC threads and exceptions
 MXE_GCC_THREADS = \
     $(if $(findstring posix,$(or $(TARGET),$(1))),posix,win32)
@@ -197,21 +179,6 @@ endef
 
 # include github related functions
 include $(PWD)/mxe.github.mk
-
-# shared lib preload to disable networking, enable faketime etc
-PRELOAD_VARS := LD_PRELOAD DYLD_FORCE_FLAT_NAMESPACE DYLD_INSERT_LIBRARIES
-
-# use a minimal whitelist of safe environment variables
-# basic working shell environment and mxe variables
-# see http://www.linuxfromscratch.org/lfs/view/stable/chapter04/settingenvironment.html
-ENV_WHITELIST := EDITOR HOME LANG PATH %PROXY %proxy PS1 TERM
-ENV_WHITELIST += MAKE% MXE% $(PRELOAD_VARS) WINEPREFIX
-
-# OS/Distro related issues - "unsafe" but practical
-# 1. https://github.com/mxe/mxe/issues/697
-ENV_WHITELIST += ACLOCAL_PATH LD_LIBRARY_PATH
-
-unexport $(filter-out $(ENV_WHITELIST),$(shell env | cut -d '=' -f1))
 
 SHORT_PKG_VERSION = \
     $(word 1,$(subst ., ,$($(1)_VERSION))).$(word 2,$(subst ., ,$($(1)_VERSION)))
@@ -748,6 +715,21 @@ build-only-$(1)_$(3): CMAKE_TOOLCHAIN_FILE = $(PREFIX)/$(3)/share/cmake/mxe-conf
 build-only-$(1)_$(3): CMAKE_TOOLCHAIN_DIR  = $(PREFIX)/$(3)/share/cmake/mxe-conf.d
 build-only-$(1)_$(3): CMAKE_STATIC_BOOL = $(if $(findstring shared,$(3)),OFF,ON)
 build-only-$(1)_$(3): CMAKE_SHARED_BOOL = $(if $(findstring shared,$(3)),ON,OFF)
+build-only-$(1)_$(3): MXE_DISABLE_DOC_OPTS = \
+    ac_cv_prog_HAVE_DOXYGEN="false" \
+    --enable-doc=no \
+    --enable-gtk-doc=no \
+    --enable-gtk-doc-html=no \
+    --enable-gtk-doc-pdf=no \
+    --{docdir,infodir,mandir,with-html-dir}='$$(BUILD_DIR).sink' \
+    --disable-doxygen
+build-only-$(1)_$(3): MXE_CONFIGURE_OPTS = \
+    --host='$(TARGET)' \
+    --prefix='$(PREFIX)/$(TARGET)' \
+    $(if $(findstring shared,$(3)), \
+        --disable-static --enable-shared, \
+        --enable-static --disable-shared) \
+    $(MXE_DISABLE_DOC_OPTS)
 build-only-$(1)_$(3):
 	$(if $(value $(call LOOKUP_PKG_RULE,$(1),BUILD,$(3))),
 	    uname -a
@@ -784,6 +766,24 @@ build-only-$(1)_$(3):
 	    )
 	touch '$(PREFIX)/$(3)/installed/$(1)'
 endef
+
+define PKG_BUILD_RULE
+.PHONY: download-$(3)-$(1)
+download-$(3)~$(1):
+	:
+
+.PHONY build-only-$(1)_$(3):
+build-only-$(1)_$(3):
+	:
+
+$(PREFIX)/$(3)/installed/$(1):
+	touch '$(PREFIX)/$(3)/installed/$(1)'
+endef
+
+BUILD_PKGS := cc
+$(foreach PKG,$(BUILD_PKGS), \
+    $(eval $(call PKG_BUILD_RULE,$(PKG),,$(BUILD))))
+
 $(foreach TARGET,$(MXE_TARGETS), \
     $(foreach PKG,$($(TARGET)_PKGS), \
         $(eval $(call PKG_TARGET_RULE,$(PKG),$(call TMP_DIR,$(PKG)-$(TARGET)),$(TARGET)))))
