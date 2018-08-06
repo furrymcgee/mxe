@@ -1,0 +1,34 @@
+Index: gettext-0.19.8.1/gettext-runtime/gnulib-m4/locale-ja.m4
+===================================================================
+--- gettext-0.19.8.1.orig/gettext-runtime/gnulib-m4/locale-ja.m4
++++ gettext-0.19.8.1/gettext-runtime/gnulib-m4/locale-ja.m4
+@@ -83,6 +83,12 @@ changequote([,])dnl
+         # "ge"(!) or "deu"(!) as "German" or "German_Germany.1252",
+         # "ja" as "Japanese" or "Japanese_Japan.932",
+         # and similar.
++        cygwin*)
++          # Note that on native Windows, the Japanese locale is
++          # Japanese_Japan.932, and CP932 is very different from EUC-JP, so we
++          # cannot use it here.
++          gt_cv_locale_ja=none
++          ;;
+         mingw*)
+           # Note that on native Windows, the Japanese locale is
+           # Japanese_Japan.932, and CP932 is very different from EUC-JP, so we
+Index: gettext-0.19.8.1/gettext-tools/gnulib-m4/locale-ja.m4
+===================================================================
+--- gettext-0.19.8.1.orig/gettext-tools/gnulib-m4/locale-ja.m4
++++ gettext-0.19.8.1/gettext-tools/gnulib-m4/locale-ja.m4
+@@ -83,6 +83,12 @@ changequote([,])dnl
+         # "ge"(!) or "deu"(!) as "German" or "German_Germany.1252",
+         # "ja" as "Japanese" or "Japanese_Japan.932",
+         # and similar.
++        cygwin*)
++          # Note that on native Windows, the Japanese locale is
++          # Japanese_Japan.932, and CP932 is very different from EUC-JP, so we
++          # cannot use it here.
++          gt_cv_locale_ja=none
++          ;;
+         mingw*)
+           # Note that on native Windows, the Japanese locale is
+           # Japanese_Japan.932, and CP932 is very different from EUC-JP, so we

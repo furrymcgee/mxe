@@ -11,7 +11,7 @@ $(PKG)_URL      := https://ftp.gnu.org/gnu/gettext/$($(PKG)_FILE)
 $(PKG)_URL_2    := https://ftpmirror.gnu.org/gettext/$($(PKG)_FILE)
 # native gettext isn't technically required, but downstream
 # cross-packages may need binaries and/or *.m4 files etc.
-$(PKG)_DEPS     := cc libiconv $(BUILD)~$(PKG)
+$(PKG)_DEPS     := cc
 
 $(PKG)_TARGETS       := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS_$(BUILD) := libiconv
@@ -25,6 +25,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
+    cd $(SOURCE_DIR) && autoreconf --install
     cd '$(1)/gettext-runtime' && ./configure \
         $(MXE_CONFIGURE_OPTS) \
         --enable-threads=win32 \

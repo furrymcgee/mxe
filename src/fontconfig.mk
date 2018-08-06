@@ -8,7 +8,7 @@ $(PKG)_CHECKSUM := 91dde8492155b7f34bb95079e79be92f1df353fcc682c19be90762fd3e12e
 $(PKG)_SUBDIR   := fontconfig-$($(PKG)_VERSION)
 $(PKG)_FILE     := fontconfig-$($(PKG)_VERSION).tar.bz2
 $(PKG)_URL      := https://fontconfig.org/release/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc expat freetype-bootstrap gettext
+$(PKG)_DEPS     := cc expat freetype-bootstrap
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://fontconfig.org/release/' | \
@@ -23,6 +23,6 @@ define $(PKG)_BUILD
         --with-arch='$(TARGET)' \
         --with-expat='$(PREFIX)/$(TARGET)' \
         --disable-docs
-    $(MAKE) -C '$(1)' -j '$(JOBS)' bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
-    $(MAKE) -C '$(1)' -j 1 install bin_PROGRAMS= sbin_PROGRAMS= noinst_PROGRAMS=
+    $(MAKE) -C '$(1)' -j '$(JOBS)'
+    $(MAKE) -C '$(1)' -j 1 install
 endef

@@ -1,0 +1,13 @@
+Index: fontconfig-2.13.0/configure.ac
+===================================================================
+--- fontconfig-2.13.0.orig/configure.ac
++++ fontconfig-2.13.0/configure.ac
+@@ -104,7 +104,7 @@ GETTEXT_PACKAGE=$PACKAGE
+ AC_SUBST(GETTEXT_PACKAGE)
+ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Gettext package])
+ 
+-AM_GNU_GETTEXT_VERSION([0.19.8])
++AM_GNU_GETTEXT_VERSION([0.19])
+ AM_GNU_GETTEXT([external])
+ 
+ dnl ==========================================================================

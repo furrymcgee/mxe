@@ -11,8 +11,6 @@ $(PKG)_URL      := https://ftp.gnu.org/gnu/libiconv/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 
-$(PKG)_DEPS_$(BUILD) :=
-
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://www.gnu.org/software/libiconv/' | \
     grep 'libiconv-' | \
