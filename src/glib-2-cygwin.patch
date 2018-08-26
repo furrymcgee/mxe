@@ -1,0 +1,38 @@
+Index: glib-2.50.2/configure.ac
+===================================================================
+--- glib-2.50.2.orig/configure.ac
++++ glib-2.50.2/configure.ac
+@@ -3385,7 +3385,7 @@ AC_ARG_ENABLE(compile-warnings,
+ AS_IF([test "x$enable_compile_warnings" = xyes], [
+   CC_CHECK_FLAGS_APPEND([GLIB_WARN_CFLAGS], [CFLAGS], [\
+    -Wall -Wstrict-prototypes -Werror=declaration-after-statement \
+-   -Werror=missing-prototypes -Werror=implicit-function-declaration \
++   -Werror=missing-prototypes \
+    -Werror=pointer-arith -Werror=init-self -Werror=format-security \
+    -Werror=format=2 -Werror=missing-include-dirs])
+ ])
+Index: glib-2.50.2/configure.ac
+===================================================================
+--- glib-2.50.2.orig/configure.ac
++++ glib-2.50.2/configure.ac
+@@ -3385,7 +3385,6 @@ AC_ARG_ENABLE(compile-warnings,
+ AS_IF([test "x$enable_compile_warnings" = xyes], [
+   CC_CHECK_FLAGS_APPEND([GLIB_WARN_CFLAGS], [CFLAGS], [\
+    -Wall -Wstrict-prototypes -Werror=declaration-after-statement \
+-   -Werror=missing-prototypes \
+    -Werror=pointer-arith -Werror=init-self -Werror=format-security \
+    -Werror=format=2 -Werror=missing-include-dirs])
+ ])
+Index: glib-2.50.2/glib/gutils.c
+===================================================================
+--- glib-2.50.2.orig/glib/gutils.c
++++ glib-2.50.2/glib/gutils.c
+@@ -123,7 +123,7 @@
+ #include <langinfo.h>
+ #endif
+ 
+-#ifdef G_PLATFORM_WIN32
++#ifdef G_OS_WIN32
+ 
+ gchar *
+ _glib_get_dll_directory (void)

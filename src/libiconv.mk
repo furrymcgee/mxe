@@ -8,8 +8,7 @@ $(PKG)_CHECKSUM := ccf536620a45458d26ba83887a983b96827001e92a13847b45e4925cc8913
 $(PKG)_SUBDIR   := libiconv-$($(PKG)_VERSION)
 $(PKG)_FILE     := libiconv-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://ftp.gnu.org/gnu/libiconv/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc
-$(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
+$(PKG)_TARGETS  := $(MXE_TARGETS)
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://www.gnu.org/software/libiconv/' | \
@@ -34,6 +33,7 @@ endef
 
 define $(PKG)_BUILD_NATIVE
     # build and install the library
+    cd '$(SOURCE_DIR)' && autoreconf --install && \
     cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
         $(MXE_CONFIGURE_OPTS)
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' $(MXE_DISABLE_DOCS)

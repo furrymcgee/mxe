@@ -9,10 +9,8 @@ $(PKG)_CHECKSUM := be68737c1f268c05493e503b3b654d2b7f43d7d0b8c5556f7e4651b870acf
 $(PKG)_SUBDIR   := glib-$($(PKG)_VERSION)
 $(PKG)_FILE     := glib-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/glib/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc dbus gettext libffi libiconv pcre zlib $(BUILD)~$(PKG)
-$(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
-
-$(PKG)_DEPS_$(BUILD) := autotools gettext libffi libiconv zlib
+$(PKG)_DEPS     := cc dbus gettext libffi libiconv pcre zlib
+$(PKG)_TARGETS  := $(MXE_TARGETS)
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://git.gnome.org/browse/glib/refs/tags' | \
@@ -74,10 +72,7 @@ define $(PKG)_BUILD_NATIVE
     $(MAKE) -C '$(BUILD_DIR)/gmodule' -j '$(JOBS)'
     $(MAKE) -C '$(BUILD_DIR)/gobject' -j '$(JOBS)' lib_LTLIBRARIES= install-exec
     $(MAKE) -C '$(BUILD_DIR)/gio/xdgmime'     -j '$(JOBS)'
-    $(MAKE) -C '$(BUILD_DIR)/gio'     -j '$(JOBS)' glib-compile-schemas
-    $(MAKE) -C '$(BUILD_DIR)/gio'     -j '$(JOBS)' glib-compile-resources
-    $(INSTALL) -m755 '$(BUILD_DIR)/gio/glib-compile-schemas' '$(PREFIX)/$(TARGET)/bin/'
-    $(INSTALL) -m755 '$(BUILD_DIR)/gio/glib-compile-resources' '$(PREFIX)/$(TARGET)/bin/'
+    $(MAKE) -C '$(BUILD_DIR)/gio'     -j '$(JOBS)' install
 endef
 
 define $(PKG)_BUILD_$(BUILD)

@@ -31,6 +31,7 @@ define $(PKG)_BUILD
         --with-tdsver=7.2 \
         --with-openssl \
         PKG_CONFIG='$(TARGET)-pkg-config' \
+        LDFLAGS='-Wl,--start-group -Wl,-lz -Wl,-lws2_32' \
         CFLAGS=-D_WIN32_WINNT=0x0600
     $(MAKE) -C '$(1)' -j '$(JOBS)' install man_MANS=
 endef
