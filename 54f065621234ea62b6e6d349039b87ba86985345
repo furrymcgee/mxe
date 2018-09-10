@@ -1,0 +1,56 @@
+Script started, file is typescript
+PATH=$PWD/usr/bin:$PATH exec make -r -d -f - <<<$'include src/icu4c.mk\nall:\n\t$(call icu4c_BUILD,/tmp/tmp.ibOB6XWlJb/mxe/tmp-icu4c-i686-w64-mingw32.static/icu)'
+/tmp/tmp.ibOB6XWlJb/mxe$ PATH=$PWD/usr/bin:$PATH exec make -r -d -f - <<<$'includde src/icu4c.mk\nall:\n\t$(call icu4c_BUILD,/tmp/tmp.ibOB6XWlJb/mxe/tmp-icu4c-i6886-w64-mingw32.static/icu)'
+GNU Make 4.1
+Built for x86_64-pc-linux-gnu
+Copyright (C) 1988-2014 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Reading makefiles...
+Reading makefile '/tmp/GmbXdQCp'...
+Reading makefile 'src/icu4c.mk' (search path) (no ~ expansion)...
+Updating makefiles....
+ Considering target file 'src/icu4c.mk'.
+  Looking for an implicit rule for 'src/icu4c.mk'.
+  No implicit rule found for 'src/icu4c.mk'.
+  Finished prerequisites of target file 'src/icu4c.mk'.
+ No need to remake target 'src/icu4c.mk'.
+ Considering target file '/tmp/GmbXdQCp'.
+ File '/tmp/GmbXdQCp' was considered already.
+Updating goal targets....
+Considering target file 'all'.
+ File 'all' does not exist.
+ Finished prerequisites of target file 'all'.
+Must remake target 'all'.
+pwd
+Putting child 0x55f3fc5acf80 (all) PID 25985 on the chain.
+Live child 0x55f3fc5acf80 (all) PID 25985
+/tmp/tmp.ibOB6XWlJb/mxe
+Reaping winning child 0x55f3fc5acf80 PID 25985
+stat /tmp/tmp.ibOB6XWlJb/mxe/tmp-icu4c-i686-w64-mingw32.static/icu/source/configure.ac
+Live child 0x55f3fc5acf80 (all) PID 25986
+  File: /tmp/tmp.ibOB6XWlJb/mxe/tmp-icu4c-i686-w64-mingw32.static/icu/source/configure.ac
+  Size: 45652     	Blocks: 96         IO Block: 4096   regular file
+Device: 2ah/42d	Inode: 364289      Links: 1
+Access: (0644/-rw-r--r--)  Uid: ( 1000/  debian)   Gid: ( 1000/  debian)
+Access: 2018-09-10 11:20:43.314897107 +0200
+Modify: 2015-10-08 06:00:26.000000000 +0200
+Change: 2018-09-10 11:20:43.314897107 +0200
+ Birth: -
+Reaping winning child 0x55f3fc5acf80 PID 25986
+cd /tmp/tmp.ibOB6XWlJb/mxe/tmp-icu4c-i686-w64-mingw32.static/icu/source
+Live child 0x55f3fc5acf80 (all) PID 25987
+Reaping winning child 0x55f3fc5acf80 PID 25987
+pwd
+Live child 0x55f3fc5acf80 (all) PID 25988
+/tmp/tmp.ibOB6XWlJb/mxe
+Reaping winning child 0x55f3fc5acf80 PID 25988
+stat configure.ac || exit 1
+Live child 0x55f3fc5acf80 (all) PID 25989
+stat: cannot stat 'configure.ac': No such file or directory
+Reaping losing child 0x55f3fc5acf80 PID 25989
+/tmp/GmbXdQCp:3: recipe for target 'all' failed
+make: *** [all] Error 1
+Removing child 0x55f3fc5acf80 PID 25989 from chain.
+Script done, file is typescript
